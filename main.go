@@ -91,9 +91,9 @@ func main() {
 	flag.IntVar(&parameters.requestNum, "n", 1, "Number of requests to perform")
 	flag.IntVar(&parameters.concurrencyNum, "c", 1, "Number of multiple requests to make at a time")
 	flag.StringVar(&parameters.certFile, "E", "", "When connecting to an SSL website, use the provided client certificate in PEM format to authenticate with the server.")
-	flag.StringVar(&parameters.postFile, "p", "", "File containing data to POST. Remember to also set -T.")
-	flag.StringVar(&parameters.contentType, "T", "text/plain", "Content-type header to use for POST/PUT data, eg. application/x-www-form-urlencoded. ")
-	flag.StringVar(&parameters.kubeConfigFile, "K", "", "File to build a Clientset which can communicate with kubernetes cluster.")
+	flag.StringVar(&parameters.postFile, "p", "", "File containing data to POST. If you want to do benchmark for k8s with default example pod, you can set 'default'. If you want to do benchmark for something but other than k8s, remember to also set -T.")
+	flag.StringVar(&parameters.contentType, "T", "application/json", "Content-type header to use for POST/PUT data.")
+	flag.StringVar(&parameters.kubeConfigFile, "K", "", "File for building a Clientset which can communicate with kubernetes cluster.")
 	flag.Var(&parameters.headers, "H", "Add Arbitrary header line, eg. 'Accept-Encoding: gzip' Inserted after all normal header lines. (repeatable)")
 
 	flag.Parse()
@@ -164,9 +164,11 @@ func main() {
 		// kubernetes create pod benchmark
 		if isPostRequest && isK8sRequest {
 			pod := k8s_client.GetExamplePod()
-			if err := yaml.Unmarshal(postData, pod); err != nil {
-				fmt.Printf("yaml Unmarshal to Pod failed: %v\n", err)
-				return
+			if parameters.postFile != "default" {
+				if err := yaml.Unmarshal(postData, pod); err != nil {
+					fmt.Printf("yaml Unmarshal to Pod failed: %v\n", err)
+					return
+				}
 			}
 
 			go func(pod *corev1.Pod, num int) {

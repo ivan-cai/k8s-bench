@@ -32,9 +32,8 @@ func BatchCreatePodHandler(namespace string, kubeConfigFile string, taskNum int,
 		return err
 	}
 
-	count := 0
-	for count < taskNum {
-		pod := originalPod
+	for i, n := 0, taskNum; i < n; i++ {
+		pod := originalPod.DeepCopy()
 		pod.Name = pod.Name + "-" + RandStringRunes(8)
 
 		if err := cli.CreatePod(namespace, pod); err != nil {

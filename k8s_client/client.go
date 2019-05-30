@@ -1,7 +1,6 @@
 package k8s_client
 
 import (
-	"fmt"
 	"k8s.io/api/core/v1"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/client-go/kubernetes"
@@ -15,12 +14,12 @@ type KubeClient struct {
 func (kc *KubeClient) CreateClient(kubeConfigPath string) error {
 	clusterConfig, err := clientcmd.BuildConfigFromFlags("", kubeConfigPath)
 	if err != nil {
-		fmt.Println("BuildConfigFromFlags error")
+		//fmt.Println("BuildConfigFromFlags error")
 		return err
 	}
 	clientSet, err := kubernetes.NewForConfig(clusterConfig)
 	if err != nil {
-		fmt.Println("NewForConfig error")
+		//fmt.Println("NewForConfig error")
 		return err
 	}
 
@@ -31,7 +30,7 @@ func (kc *KubeClient) CreateClient(kubeConfigPath string) error {
 
 func (kc *KubeClient) CreatePod(namespace string, pod *v1.Pod) error {
 	if _, err := kc.client.CoreV1().Pods(namespace).Create(pod); err != nil {
-		fmt.Printf("createPod failed %v: %v\n", pod, err)
+		//fmt.Printf("createPod failed %v: %v\n", pod, err)
 		return err
 	}
 
@@ -44,14 +43,14 @@ func (kc *KubeClient) ListPods(opts metav1.ListOptions) (*v1.PodList, error) {
 		return nil, err
 	}
 
-	fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
+	//fmt.Printf("There are %d pods in the cluster\n", len(pods.Items))
 	return pods, nil
 }
 
 func (kc *KubeClient) GetPod(namespace, pod string) (*v1.Pod, error) {
 	res, err := kc.client.CoreV1().Pods(namespace).Get(pod, metav1.GetOptions{})
 	if err != nil {
-		fmt.Printf("Pod %s in namespace %s not found\n", pod, namespace)
+		//fmt.Printf("Pod %s in namespace %s not found\n", pod, namespace)
 		return nil, err
 	}
 
