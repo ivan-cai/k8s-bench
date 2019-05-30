@@ -32,10 +32,10 @@ func BatchCreatePodHandler(namespace string, kubeConfigFile string, taskNum int,
 		return err
 	}
 
-	pod := originalPod
 	count := 0
 	for count < taskNum {
-		pod.Name = pod.Name + "_" + RandStringRunes(8)
+		pod := originalPod
+		pod.Name = pod.Name + "-" + RandStringRunes(8)
 
 		if err := cli.CreatePod(namespace, pod); err != nil {
 			atomic.AddInt64(&common.FailNum, 1)
