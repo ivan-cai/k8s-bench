@@ -48,19 +48,25 @@ func validateParameters(param *InputParameters, invalidHeadersNum int) bool {
 		return false
 	}
 
-	if err := utils.PathExist(param.certFile); err != nil {
-		fmt.Printf("Could not open certificate file(%v): (%v)", param.certFile, err)
-		return false
+	if param.certFile != "" {
+		if err := utils.PathExist(param.certFile); err != nil {
+			fmt.Printf("Could not open certificate file(%v): (%v)", param.certFile, err)
+			return false
+		}
 	}
 
-	if err := utils.PathExist(param.postFile); err != nil {
-		fmt.Printf("Could not open post file(%v): (%v)", param.certFile, err)
-		return false
+	if param.postFile != "" {
+		if err := utils.PathExist(param.postFile); err != nil {
+			fmt.Printf("Could not open post file(%v): (%v)", param.certFile, err)
+			return false
+		}
 	}
 
-	if err := utils.PathExist(param.kubeConfigFile); err != nil {
-		fmt.Printf("Could not open kube config file(%v): (%v)", param.kubeConfigFile, err)
-		return false
+	if param.kubeConfigFile != "" {
+		if err := utils.PathExist(param.kubeConfigFile); err != nil {
+			fmt.Printf("Could not open kube config file(%v): (%v)", param.kubeConfigFile, err)
+			return false
+		}
 	}
 
 	if invalidHeadersNum != 0 {
@@ -78,7 +84,7 @@ func main() {
 
 	// version
 	var version bool
-	flag.BoolVar(&version, "v", false, "print k8s-bench version and exit")
+	flag.BoolVar(&version, "version", false, "print k8s-bench version and exit")
 
 	var parameters InputParameters
 	// get command line parameters
@@ -87,7 +93,7 @@ func main() {
 	flag.StringVar(&parameters.certFile, "E", "", "When connecting to an SSL website, use the provided client certificate in PEM format to authenticate with the server.")
 	flag.StringVar(&parameters.postFile, "p", "", "File containing data to POST. Remember to also set -T.")
 	flag.StringVar(&parameters.contentType, "T", "text/plain", "Content-type header to use for POST/PUT data, eg. application/x-www-form-urlencoded. ")
-	flag.StringVar(&parameters.kubeConfigFile, "K", "/root/.kube/config", "File to build a Clientset which can communicate with kubernetes cluster.")
+	flag.StringVar(&parameters.kubeConfigFile, "K", "", "File to build a Clientset which can communicate with kubernetes cluster.")
 	flag.Var(&parameters.headers, "H", "Add Arbitrary header line, eg. 'Accept-Encoding: gzip' Inserted after all normal header lines. (repeatable)")
 
 	flag.Parse()

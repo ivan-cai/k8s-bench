@@ -25,18 +25,19 @@ func RandStringRunes(n int) string {
 	return string(b)
 }
 
-func BatchCreatePodHandler(namespace string, kubeConfigFile string, taskNum int, pod *v1.Pod) error {
+func BatchCreatePodHandler(namespace string, kubeConfigFile string, taskNum int, originalPod *v1.Pod) error {
 	cli := KubeClient{}
 	if err := cli.CreateClient(kubeConfigFile); err != nil {
 		fmt.Printf("k8s client create failed: %v\n", err)
 		return err
 	}
 
+	pod := originalPod
 	count := 0
 	for count < taskNum {
-		pod.Name = pod.Name + RandStringRunes(8)
+		pod.Name = pod.Name + "_" + RandStringRunes(8)
 
-		if err := cli.CreatePod(kubeConfigFile, pod); err != nil {
+		if err := cli.CreatePod(namespace, pod); err != nil {
 			atomic.AddInt64(&common.FailNum, 1)
 			continue
 		}
