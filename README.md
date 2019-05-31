@@ -5,9 +5,10 @@ benchmark for kubernetes
 使用client-go发送请求
 
 ### 打包
+```go
 cd ivan-cai/k8s-bench
 go build
-
+```
 ### 命令
 #### 创建pod的命令
 ```
