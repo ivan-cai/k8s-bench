@@ -55,7 +55,7 @@ func validateParameters(param *InputParameters, invalidHeadersNum int) bool {
 		}
 	}
 
-	if param.postFile != "" {
+	if param.postFile != "" && param.postFile != "default" {
 		if err := utils.PathExist(param.postFile); err != nil {
 			fmt.Printf("Could not open post file(%v): (%v)", param.certFile, err)
 			return false
